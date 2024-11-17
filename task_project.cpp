@@ -1,5 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
+// try sorting the taskes by there ID
+// create a task structure and another task node inside that tasknode structure store task object and next and prev pointer instead of storing everything inside a node of a linkedlist 
+
 struct taskNode
 {
     int taskId = 0;
@@ -14,7 +17,14 @@ struct taskNode
         this->taskId = taskid;
     }
 };
-
+// function to validate users input in number choice
+bool isNumber(const string &str)
+{
+    if (str.empty())
+    {
+        return false;
+    }
+}
 void *taskInput(taskNode *&head)
 {
     static int tid = 0;
@@ -36,22 +46,26 @@ void *taskInput(taskNode *&head)
     // return head;
 }
 
-taskNode* delete_by_id(taskNode*head){
+taskNode *delete_by_id(taskNode *head)
+{
     int id;
-    cout<<"Enter ID to delete:"<<endl;
-    cin>>id;
-    if(head == nullptr){
+    cout << "Enter ID to delete:" << endl;
+    cin >> id;
+    if (head == nullptr)
+    {
         return nullptr;
     }
-    if(head->taskId == id){
-        taskNode*temp = head;
+    if (head->taskId == id)
+    {
+        taskNode *temp = head;
         head = head->next;
         delete temp;
         return head;
     }
     taskNode *curr = head;
     taskNode *prev = nullptr;
-    while(curr->taskId != id){
+    while (curr->taskId != id)
+    {
         prev = curr;
         curr = curr->next;
     }
@@ -81,7 +95,7 @@ int main()
     // taskNode *t3 = taskInput(t2);
     // printTask(t3);
     int x = 1;
-    int choice;
+    string choice;
     while (x <= 10)
     {
         cout << "1. Create Task" << endl
@@ -89,34 +103,45 @@ int main()
              << "3.Delete By ID" << endl
              << "Escape(-1)" << endl;
         cin >> choice;
-        if (choice == -1)
+        try
         {
-            break; // apply condition to check input thing is integer or not
+            int num = stoi(choice);
+            if (num == -1)
+            {
+                break;
+            }
+            if (num > -1 && num <= 3)
+            {
+                switch (num)
+                {
+                case 1:
+                    taskInput(head);
+                    break;
+                case 2:
+                    printTask(head);
+                    break;
+                case 3:
+                    printTask(head);
+                    delete_by_id(head);
+                    break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                cout << "-----------------" << endl;
+                cout << "Invalid Choice" << endl;
+                cout << "-----------------" << endl;
+            }
         }
-        else if (choice > 3)
+        catch (...)
         {
             cout << "-----------------" << endl;
             cout << "Invalid Choice" << endl;
             cout << "-----------------" << endl;
         }
-        switch (choice)
-        {
-        case 1:
-            taskInput(head);
-            break;
-        case 2:
-            printTask(head);
-            break;
-        case 3:
-            printTask(head);
-            delete_by_id(head);
-            break;
-        case -1:
-            break;
 
-        default:
-            break;
-        }
         x++;
     }
 

@@ -16,9 +16,9 @@ Advancement:     Intialli only prject name and project id later make it more rob
 Now Work on:
     # - create the structure of the node
     # - create a task i.e input from the user
-    - delete it by id
+    # - delete it by id
     # - print
-
+    # - proper user input
 Now Work on:
     - sort them by Id
     - save to file
