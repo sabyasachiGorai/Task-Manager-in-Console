@@ -1,107 +1,167 @@
 #include <bits/stdc++.h>
+#include <iomanip> // For setw, left
+#include <iostream>
+#include <string>
 using namespace std;
-// try sorting the taskes by there ID
-// create a task structure and another task node inside that tasknode structure store task object and next and prev pointer instead of storing everything inside a node of a linkedlist 
+// try sorting the taskes by there priority
 
-struct taskNode
+struct Task
 {
     int taskId = 0;
+    int taskPriority = 0;
     string taskName;
-    // taskNode *prev; // implemnet later in doubly
-    taskNode *next;
-
-    taskNode(string taskName, int taskid)
+    Task(string taskName, int taskid, int taskPriority)
     {
         this->taskName = taskName;
-        next = nullptr;
         this->taskId = taskid;
+        this->taskPriority = taskPriority;
     }
 };
-// function to validate users input in number choice
-bool isNumber(const string &str)
+struct taskNode
 {
-    if (str.empty())
+    taskNode *prev;
+    Task *task;
+    taskNode *next;
+    taskNode(Task *task)
     {
-        return false;
+        this->task = task;
+        // prev = nullptr;
+        next = nullptr;
     }
-}
+};
+
 void *taskInput(taskNode *&head)
 {
+    cin.ignore();
+
     static int tid = 0;
     tid++;
+
     string taskName;
-    cout << "Enter a Task:";
-    cin >> taskName;
-    taskNode *newNode = new taskNode(taskName, tid);
+    int taskPriority;
+    cout << "-----------------" << endl;
+    cout << "Enter Task Name: ";
+    getline(cin, taskName);
+
+    cout << "Enter Priority (0-9): ";
+    cin >> taskPriority;
+
+    Task *tocopy = new Task(taskName, tid, taskPriority);
+    taskNode *newNode = new taskNode(tocopy);
     if (head == nullptr)
     {
         head = newNode;
-        // return head;
     }
     else
     {
         newNode->next = head;
         head = newNode;
     }
-    // return head;
 }
 
-taskNode *delete_by_id(taskNode *head)
+void delete_by_id(taskNode *&head)
 {
+
     int id;
-    cout << "Enter ID to delete:" << endl;
+    cout << "Enter ID to delete: --> ";
     cin >> id;
     if (head == nullptr)
     {
-        return nullptr;
+        cout << "Task list is Empty !!" << endl;
+        return;
     }
-    if (head->taskId == id)
+    if (head->task->taskId == id)
     {
         taskNode *temp = head;
         head = head->next;
+        delete temp->task;
         delete temp;
-        return head;
+        if (head == nullptr)
+        {
+            cout << "All task deleted" << endl;
+        }
+        return;
     }
     taskNode *curr = head;
     taskNode *prev = nullptr;
-    while (curr->taskId != id)
+    while (curr != nullptr && curr->task->taskId != id)
     {
         prev = curr;
         curr = curr->next;
     }
+    if (curr == nullptr)
+    {
+        cout << "Id " << id << " not found";
+    }
     taskNode *toDel = curr;
     prev->next = curr->next;
+    delete toDel->task;
     delete toDel;
-    return head;
 }
-// think about how the task input finction will work
+
 void printTask(taskNode *head)
 {
+    if (head == nullptr)
+    {
+        cout << "==========================================" << endl;
+        cout << "|            No Tasks Available          |" << endl;
+        cout << "==========================================" << endl;
+        return;
+    }
+
+    // Find the maximum length of task names
+    int maxNameLength = 9; // Minimum length for "Task Name" header
     taskNode *temp = head;
-    cout << "-----------------" << endl;
-    cout << "[Task id] " << "task" << endl;
     while (temp != nullptr)
     {
-        cout << "[" << temp->taskId << "] " << temp->taskName << endl;
+        maxNameLength = max(maxNameLength, (int)temp->task->taskName.length());
         temp = temp->next;
     }
-    cout << "-----------------" << endl;
+
+    // Column widths
+    const int idWidth = 10;
+    const int priorityWidth = 10;
+    int nameWidth = maxNameLength + 2; // Add padding for better visuals
+
+    // Calculate total table width
+    int tableWidth = idWidth + nameWidth + priorityWidth + 7; // Include borders
+
+    // Print dynamic border
+    cout << string(tableWidth, '=') << endl;
+    cout << "| " << left << setw(idWidth) << "Task ID"
+         << "| " << left << setw(nameWidth) << "Task Name"
+         << "| " << left << setw(priorityWidth) << "Priority" << "|" << endl;
+    cout << string(tableWidth, '=') << endl;
+
+    // Print tasks dynamically
+    temp = head;
+    while (temp != nullptr)
+    {
+        cout << "| " << left << setw(idWidth) << temp->task->taskId
+             << "| " << left << setw(nameWidth) << temp->task->taskName
+             << "| " << left << setw(priorityWidth) << temp->task->taskPriority << "|" << endl;
+        temp = temp->next;
+    }
+
+    // Print dynamic footer
+    cout << string(tableWidth, '=') << endl;
 }
 
 int main()
 {
     taskNode *head = nullptr;
-    // taskNode *t2 = taskInput(t);
-    // taskNode *t3 = taskInput(t2);
-    // printTask(t3);
     int x = 1;
     string choice;
-    while (x <= 10)
+    while (x <= 30)
     {
-        cout << "1. Create Task" << endl
-             << "2.Print Task" << endl
-             << "3.Delete By ID" << endl
-             << "Escape(-1)" << endl;
+        cout << "-----------------" << endl;
+
+        cout << "Create Task   --> 1" << endl
+             << "Print Task    --> 2" << endl
+             << "Delete By ID  --> 3" << endl
+             << "Escape (x_x) --> -1" << endl
+             << "Enter --> ";
+
         cin >> choice;
         try
         {
