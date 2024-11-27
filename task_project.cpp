@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 using namespace std;
-// try sorting the taskes by there priority
 
 struct Task
 {
@@ -17,6 +16,7 @@ struct Task
         this->taskPriority = taskPriority;
     }
 };
+
 struct taskNode
 {
     taskNode *prev;
@@ -29,6 +29,72 @@ struct taskNode
         next = nullptr;
     }
 };
+
+taskNode *find_mid(taskNode *head)
+{
+    taskNode *slow = head;
+    taskNode *fast = head->next;
+    while (fast != nullptr && fast->next != nullptr)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+
+taskNode *merge_two_LL(taskNode *head1, taskNode *head2)
+{
+    Task *dummyTask = new Task("empty", 0, 0);
+    taskNode *dummy = new taskNode(dummyTask);
+    taskNode *dummyhead = dummy;
+    while (head1 != nullptr && head2 != nullptr)
+    {
+        if (head1->task->taskPriority < head2->task->taskPriority)
+        {
+            dummy->next = head1;
+            head1 = head1->next;
+            dummy = dummy->next;
+        }
+        else
+        {
+            dummy->next = head2;
+            head2 = head2->next;
+            dummy = dummy->next;
+        }
+    }
+    if (head1 != nullptr)
+    {
+        dummy->next = head1;
+    }
+
+    if (head2 != nullptr)
+    {
+        dummy->next = head2;
+    }
+    return dummyhead->next;
+}
+
+taskNode *sortFunction(taskNode *head)
+{
+    taskNode *middle = find_mid(head);
+
+    if (head == nullptr || head->next == nullptr)
+    {
+        return head;
+    }
+    taskNode *mid = find_mid(head);
+    taskNode *lefthead = head, *righthead = mid->next;
+    mid->next = nullptr;
+    lefthead = sortFunction(lefthead);
+    righthead = sortFunction(righthead);
+    return merge_two_LL(lefthead, righthead);
+}
+
+void sortBYPriority(taskNode *&head)
+{
+    taskNode *temp = head;
+    head = sortFunction(temp);
+}
 
 void *taskInput(taskNode *&head)
 {
@@ -156,10 +222,11 @@ int main()
     {
         cout << "-----------------" << endl;
 
-        cout << "Create Task   --> 1" << endl
-             << "Print Task    --> 2" << endl
-             << "Delete By ID  --> 3" << endl
-             << "Escape (x_x) --> -1" << endl
+        cout << "Create Task      --> 1" << endl
+             << "Print Task       --> 2" << endl
+             << "Delete By ID     --> 3" << endl
+             << "Sort By Prority  --> 4" << endl
+             << "Escape (x_x)    --> -1" << endl
              << "Enter --> ";
 
         cin >> choice;
@@ -170,7 +237,7 @@ int main()
             {
                 break;
             }
-            if (num > -1 && num <= 3)
+            if (num > -1 && num < 5)
             {
                 switch (num)
                 {
@@ -183,6 +250,10 @@ int main()
                 case 3:
                     printTask(head);
                     delete_by_id(head);
+                    break;
+                case 4:
+                    sortBYPriority(head);
+                    printTask(head);
                     break;
                 default:
                     break;

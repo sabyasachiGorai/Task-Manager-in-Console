@@ -17,12 +17,29 @@ Now Work on:
     # - create the structure of the node
     # - create a task i.e input from the user
     # - delete it by id
-    # - print
+    # - print 
     # - proper user input
+    # - print in proper table format
 Now Work on:
-    - sort them by Id
-    - save to file
+    # - sort them by Id
+        --> also can be implemnted by priority queue but implemnted sorting 
+        # LL mergesort
+        # merge to sorted LL # <-- to do 
+        # find mid of a LL
+    - save to file  #<-- file  
     - fetch from file
 
 Now work on:
     - work on additional features
+    - alternate two switch case except if else
+
+
+# NEW LEARNINGS
+-> pointer in depth
+-> iomanip
+    - setw
+-> merge two sorted array
+-> merge sort
+-> merge two sorted list
+-> find mid of the list
+-> merge sort in list
