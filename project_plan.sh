@@ -6,9 +6,9 @@ IDEA:   Develop a program to take task for user as input and save in linkedlist 
 
 Advancement:     Intially only prject name and project id later make it more robust by integrating 
             - duedate 
-            - save task in file fetch from a file if required
-            - priority 
-            - sort accroding to priority
+            # - save task in file fetch from a file if required
+            # - priority 
+            # - sort accroding to priority
             - view pending task
             - mark tasks as completed
             - etc.
@@ -26,8 +26,15 @@ Now Work on:
         # LL mergesort
         # merge to sorted LL # <-- to do 
         # find mid of a LL
-    - save to file  #<-- file  
+    # - save to file  #<-- file  
     - fetch from file
+            # // duplicate tid fix
+            // should i always show by priority
+            // when fetching data getting reversed 
+            // ideas to fix them
+            // due date implement
+            // cli improve input handle
+                    # tid_max = max(tid, tid_max);
 
 Now work on:
     - work on additional features
@@ -37,7 +44,7 @@ Now work on:
 # NEW LEARNINGS
 -> pointer in depth
 -> iomanip
-    - setw
+    - setw # https://www.youtube.com/watch?v=SXLwnZG3KPI  << 
 -> merge two sorted array
 -> merge sort
 -> merge two sorted list

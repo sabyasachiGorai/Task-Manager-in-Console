@@ -30,6 +30,117 @@ struct taskNode
     }
 };
 
+void saveToFile(taskNode *&head)
+{
+    // ofstream fout;
+    // fout.open("tasks.txt");
+    //     if (head == nullptr)
+    // {
+    //     fout << "==========================================" << endl;
+    //     fout << "|            No Tasks Available          |" << endl;
+    //     fout << "==========================================" << endl;
+    //     return;
+    // }
+
+    // // Find the maximum length of task names
+    // int maxNameLength = 9; // Minimum length for "Task Name" header
+    // taskNode *temp = head;
+    // while (temp != nullptr)
+    // {
+    //     maxNameLength = max(maxNameLength, (int)temp->task->taskName.length());
+    //     temp = temp->next;
+    // }
+
+    // // Column widths
+    // const int idWidth = 10;
+    // const int priorityWidth = 10;
+    // int nameWidth = maxNameLength + 2; // Add padding for better visuals
+
+    // // Calculate total table width
+    // int tableWidth = idWidth + nameWidth + priorityWidth + 7; // Include borders
+
+    // // Print dynamic border
+    // fout << string(tableWidth, '=') << endl;
+    // fout << "| " <<  setw(idWidth) << "Task ID"
+    //      << "| " << left << setw(nameWidth) << "Task Name"
+    //      << "| " << left << setw(priorityWidth) << "Priority" << "|" << endl;
+    // fout << string(tableWidth, '=') << endl;
+
+    // // Print tasks dynamically
+    // temp = head;
+    // while (temp != nullptr)
+    // {
+    //     fout << "| " << left << setw(idWidth) << temp->task->taskId
+    //          << "| " << left << setw(nameWidth) << temp->task->taskName
+    //          << "| " << left << setw(priorityWidth) << temp->task->taskPriority << "|" << endl;
+    //     temp = temp->next;
+    // }
+
+    // // Print dynamic footer
+    // fout << string(tableWidth, '=') << endl;
+    // fout.close();
+}
+
+void saveToFileCSV(taskNode *&head)
+{
+    ofstream fout;
+    fout.open("tasks.txt");
+
+    taskNode *temp = head;
+    temp = head;
+    while (temp != nullptr)
+    {
+        fout << temp->task->taskId << ","
+             << temp->task->taskName << ","
+             << temp->task->taskPriority << endl;
+        temp = temp->next;
+    }
+
+    fout.close();
+}
+
+void fetchFromCSV(taskNode *&head, int &tid_max)
+{
+    ifstream fin;
+    fin.open("tasks.txt");
+    if (!fin.is_open())
+    {
+        cout << "File not Found";
+    }
+    string line;
+    // int tid_max = 0;
+    while (getline(fin, line))
+    {
+        stringstream ss(line);
+        int tid, taskPriority;
+        string taskName;
+
+        string temp;
+        getline(ss, temp, ','); //  extract ID
+        tid = stoi(temp);
+        tid_max = max(tid, tid_max);
+
+        getline(ss, taskName, ','); // extract name
+
+        getline(ss, temp, ','); //  extract priority
+        taskPriority = stoi(temp);
+
+        Task *tocopy = new Task(taskName, tid, taskPriority);
+        taskNode *newNode = new taskNode(tocopy);
+        if (head == nullptr)
+        {
+            head = newNode;
+        }
+        else
+        {
+            newNode->next = head;
+            head = newNode;
+        }
+    }
+    cout<<"Data fetching done."<<endl;
+    fin.close();
+}
+
 taskNode *find_mid(taskNode *head)
 {
     taskNode *slow = head;
@@ -96,11 +207,11 @@ void sortBYPriority(taskNode *&head)
     head = sortFunction(temp);
 }
 
-void *taskInput(taskNode *&head)
+void *taskInput(taskNode *&head, int &tid_max)
 {
     cin.ignore();
 
-    static int tid = 0;
+    static int tid = tid_max;
     tid++;
 
     string taskName;
@@ -217,16 +328,23 @@ int main()
 {
     taskNode *head = nullptr;
     int x = 1;
-    string choice;
+    int tid_max = 0;
+    string choice = "0";
     while (x <= 30)
     {
+        if (stoi(choice) == -1)
+        {
+            break;
+        }
         cout << "-----------------" << endl;
 
         cout << "Create Task      --> 1" << endl
              << "Print Task       --> 2" << endl
              << "Delete By ID     --> 3" << endl
              << "Sort By Prority  --> 4" << endl
-             << "Escape (x_x)    --> -1" << endl
+             << "Save and Exit    --> 5" << endl
+             << "Fetch From CSV   --> 6" << endl
+             << "Exit             --> -1" << endl
              << "Enter --> ";
 
         cin >> choice;
@@ -237,12 +355,12 @@ int main()
             {
                 break;
             }
-            if (num > -1 && num < 5)
+            if (num > -1 && num < 7)
             {
                 switch (num)
                 {
                 case 1:
-                    taskInput(head);
+                    taskInput(head, tid_max);
                     break;
                 case 2:
                     printTask(head);
@@ -253,6 +371,14 @@ int main()
                     break;
                 case 4:
                     sortBYPriority(head);
+                    printTask(head);
+                    break;
+                case 5:
+                    saveToFileCSV(head);
+                    choice = "-1";
+                    break;
+                case 6:
+                    fetchFromCSV(head, tid_max);
                     printTask(head);
                     break;
                 default:
