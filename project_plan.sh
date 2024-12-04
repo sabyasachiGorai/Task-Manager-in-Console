@@ -27,13 +27,13 @@ Now Work on:
         # merge to sorted LL # <-- to do 
         # find mid of a LL
     # - save to file  #<-- file  
-    - fetch from file
+    # - fetch from file
             # // duplicate tid fix
-            // should i always show by priority
-            // when fetching data getting reversed 
-            // ideas to fix them
-            // due date implement
-            // cli improve input handle
+            # // should i always show by priority
+            # // when fetching data getting reversed 
+            # // ideas to fix them
+            # // due date implement // due date cancelled creation time impplemented in cli duedate is overwhelming
+            # // cli improve input handle
                     # tid_max = max(tid, tid_max);
 
 Now work on:
@@ -50,3 +50,6 @@ Now work on:
 -> merge two sorted list
 -> find mid of the list
 -> merge sort in list
+
+// write what more learned
+# think about alinkedin post

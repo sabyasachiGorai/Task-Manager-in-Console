@@ -2,18 +2,21 @@
 #include <iomanip> // For setw, left
 #include <iostream>
 #include <string>
+#include <ctime>
 using namespace std;
 
 struct Task
 {
     int taskId = 0;
     int taskPriority = 0;
+    int creationTime;
     string taskName;
-    Task(string taskName, int taskid, int taskPriority)
+    Task(string taskName, int taskid, int taskPriority, int creationTime)
     {
         this->taskName = taskName;
         this->taskId = taskid;
         this->taskPriority = taskPriority;
+        this->creationTime = creationTime;
     }
 };
 
@@ -30,57 +33,6 @@ struct taskNode
     }
 };
 
-void saveToFile(taskNode *&head)
-{
-    // ofstream fout;
-    // fout.open("tasks.txt");
-    //     if (head == nullptr)
-    // {
-    //     fout << "==========================================" << endl;
-    //     fout << "|            No Tasks Available          |" << endl;
-    //     fout << "==========================================" << endl;
-    //     return;
-    // }
-
-    // // Find the maximum length of task names
-    // int maxNameLength = 9; // Minimum length for "Task Name" header
-    // taskNode *temp = head;
-    // while (temp != nullptr)
-    // {
-    //     maxNameLength = max(maxNameLength, (int)temp->task->taskName.length());
-    //     temp = temp->next;
-    // }
-
-    // // Column widths
-    // const int idWidth = 10;
-    // const int priorityWidth = 10;
-    // int nameWidth = maxNameLength + 2; // Add padding for better visuals
-
-    // // Calculate total table width
-    // int tableWidth = idWidth + nameWidth + priorityWidth + 7; // Include borders
-
-    // // Print dynamic border
-    // fout << string(tableWidth, '=') << endl;
-    // fout << "| " <<  setw(idWidth) << "Task ID"
-    //      << "| " << left << setw(nameWidth) << "Task Name"
-    //      << "| " << left << setw(priorityWidth) << "Priority" << "|" << endl;
-    // fout << string(tableWidth, '=') << endl;
-
-    // // Print tasks dynamically
-    // temp = head;
-    // while (temp != nullptr)
-    // {
-    //     fout << "| " << left << setw(idWidth) << temp->task->taskId
-    //          << "| " << left << setw(nameWidth) << temp->task->taskName
-    //          << "| " << left << setw(priorityWidth) << temp->task->taskPriority << "|" << endl;
-    //     temp = temp->next;
-    // }
-
-    // // Print dynamic footer
-    // fout << string(tableWidth, '=') << endl;
-    // fout.close();
-}
-
 void saveToFileCSV(taskNode *&head)
 {
     ofstream fout;
@@ -92,7 +44,8 @@ void saveToFileCSV(taskNode *&head)
     {
         fout << temp->task->taskId << ","
              << temp->task->taskName << ","
-             << temp->task->taskPriority << endl;
+             << temp->task->taskPriority << ","
+             << temp->task->creationTime << endl;
         temp = temp->next;
     }
 
@@ -112,7 +65,7 @@ void fetchFromCSV(taskNode *&head, int &tid_max)
     while (getline(fin, line))
     {
         stringstream ss(line);
-        int tid, taskPriority;
+        int tid, taskPriority, time;
         string taskName;
 
         string temp;
@@ -125,7 +78,10 @@ void fetchFromCSV(taskNode *&head, int &tid_max)
         getline(ss, temp, ','); //  extract priority
         taskPriority = stoi(temp);
 
-        Task *tocopy = new Task(taskName, tid, taskPriority);
+        getline(ss, temp, ','); // extract time
+        time = stoi(temp);
+
+        Task *tocopy = new Task(taskName, tid, taskPriority, time);
         taskNode *newNode = new taskNode(tocopy);
         if (head == nullptr)
         {
@@ -137,7 +93,7 @@ void fetchFromCSV(taskNode *&head, int &tid_max)
             head = newNode;
         }
     }
-    cout<<"Data fetching done."<<endl;
+    cout << "Data fetching done." << endl;
     fin.close();
 }
 
@@ -153,14 +109,26 @@ taskNode *find_mid(taskNode *head)
     return slow;
 }
 
-taskNode *merge_two_LL(taskNode *head1, taskNode *head2)
+taskNode *merge_two_LL(taskNode *head1, taskNode *head2, bool var)
 {
-    Task *dummyTask = new Task("empty", 0, 0);
+    Task *dummyTask = new Task("empty", 0, 0, 0);
     taskNode *dummy = new taskNode(dummyTask);
     taskNode *dummyhead = dummy;
+    int a, b;
+
     while (head1 != nullptr && head2 != nullptr)
     {
-        if (head1->task->taskPriority < head2->task->taskPriority)
+        if (var == true)
+        {
+            a = head1->task->creationTime;
+            b = head2->task->creationTime;
+        }
+        else
+        {
+            a = head1->task->taskPriority;
+            b = head2->task->taskPriority;
+        }
+        if (a < b)
         {
             dummy->next = head1;
             head1 = head1->next;
@@ -185,26 +153,38 @@ taskNode *merge_two_LL(taskNode *head1, taskNode *head2)
     return dummyhead->next;
 }
 
-taskNode *sortFunction(taskNode *head)
+taskNode *sortFunction(taskNode *head, bool var)
 {
-    taskNode *middle = find_mid(head);
 
     if (head == nullptr || head->next == nullptr)
     {
         return head;
     }
+    // taskNode *middle = find_mid(head);
     taskNode *mid = find_mid(head);
     taskNode *lefthead = head, *righthead = mid->next;
     mid->next = nullptr;
-    lefthead = sortFunction(lefthead);
-    righthead = sortFunction(righthead);
-    return merge_two_LL(lefthead, righthead);
+    lefthead = sortFunction(lefthead, var);
+    righthead = sortFunction(righthead, var);
+    return merge_two_LL(lefthead, righthead, var);
 }
 
 void sortBYPriority(taskNode *&head)
 {
     taskNode *temp = head;
-    head = sortFunction(temp);
+    // var = false; // for sort by priority
+    if (temp != nullptr)
+        head = sortFunction(temp, false);
+}
+
+void sortBYCT(taskNode *&head)
+{
+    taskNode *temp = head;
+    if (temp != nullptr)
+    {
+        // var = true; // for sort by creation time
+        head = sortFunction(temp, true);
+    }
 }
 
 void *taskInput(taskNode *&head, int &tid_max)
@@ -222,8 +202,8 @@ void *taskInput(taskNode *&head, int &tid_max)
 
     cout << "Enter Priority (0-9): ";
     cin >> taskPriority;
-
-    Task *tocopy = new Task(taskName, tid, taskPriority);
+    time_t currentTime = time(0);
+    Task *tocopy = new Task(taskName, tid, taskPriority, currentTime);
     taskNode *newNode = new taskNode(tocopy);
     if (head == nullptr)
     {
@@ -240,7 +220,7 @@ void delete_by_id(taskNode *&head)
 {
 
     int id;
-    cout << "Enter ID to delete: --> ";
+    cout << "Enter ID to Mark as done and delete: --> ";
     cin >> id;
     if (head == nullptr)
     {
@@ -299,24 +279,36 @@ void printTask(taskNode *head)
     const int idWidth = 10;
     const int priorityWidth = 10;
     int nameWidth = maxNameLength + 2; // Add padding for better visuals
+    const int timeWidth = 20;          // Width for "Creation Time" column
 
     // Calculate total table width
-    int tableWidth = idWidth + nameWidth + priorityWidth + 7; // Include borders
+    int tableWidth = idWidth + nameWidth + priorityWidth + timeWidth + 9; // Include borders
 
     // Print dynamic border
     cout << string(tableWidth, '=') << endl;
     cout << "| " << left << setw(idWidth) << "Task ID"
          << "| " << left << setw(nameWidth) << "Task Name"
-         << "| " << left << setw(priorityWidth) << "Priority" << "|" << endl;
+         << "| " << left << setw(priorityWidth) << "Priority"
+         << "| " << left << setw(timeWidth) << "Creation Time" << "|" << endl;
     cout << string(tableWidth, '=') << endl;
 
     // Print tasks dynamically
     temp = head;
     while (temp != nullptr)
     {
+        // Convert epoch time to human-readable format
+        time_t epochTime = static_cast<time_t>(temp->task->creationTime);
+
+        struct tm *timeInfo = localtime(&epochTime);
+        char timeStr[20];
+        strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", timeInfo); // Format time as YYYY-MM-DD HH:MM:SS
+
+        // Print task data with creation time
         cout << "| " << left << setw(idWidth) << temp->task->taskId
              << "| " << left << setw(nameWidth) << temp->task->taskName
-             << "| " << left << setw(priorityWidth) << temp->task->taskPriority << "|" << endl;
+             << "| " << left << setw(priorityWidth) << temp->task->taskPriority
+             << "| " << left << setw(timeWidth) << timeStr << "|" << endl;
+
         temp = temp->next;
     }
 
@@ -336,12 +328,16 @@ int main()
         {
             break;
         }
-        cout << "-----------------" << endl;
+        // system("cls"); // For Windows
+
+        cout << string(40, '-') << endl;                    // Divider
+        cout << setw(20) <<  "Task Manager" << endl; // Title
+        cout << string(40, '-') << endl;                    // Divider
 
         cout << "Create Task      --> 1" << endl
              << "Print Task       --> 2" << endl
-             << "Delete By ID     --> 3" << endl
-             << "Sort By Prority  --> 4" << endl
+             << "Done By ID       --> 3" << endl
+             << "Sort By Cr Time  --> 4" << endl
              << "Save and Exit    --> 5" << endl
              << "Fetch From CSV   --> 6" << endl
              << "Exit             --> -1" << endl
@@ -363,14 +359,18 @@ int main()
                     taskInput(head, tid_max);
                     break;
                 case 2:
+                    sortBYPriority(head);
+                    system("cls");
                     printTask(head);
                     break;
                 case 3:
+                    system("cls");
                     printTask(head);
                     delete_by_id(head);
                     break;
                 case 4:
-                    sortBYPriority(head);
+                    system("cls");
+                    sortBYCT(head);
                     printTask(head);
                     break;
                 case 5:
@@ -378,7 +378,9 @@ int main()
                     choice = "-1";
                     break;
                 case 6:
+                    system("cls");
                     fetchFromCSV(head, tid_max);
+                    sortBYPriority(head);
                     printTask(head);
                     break;
                 default:
