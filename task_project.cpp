@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include <iomanip> // For setw, left
 #include <iostream>
+#include <iomanip> // For setw, left
 #include <string>
 #include <ctime>
 using namespace std;
@@ -61,7 +61,6 @@ void fetchFromCSV(taskNode *&head, int &tid_max)
         cout << "File not Found";
     }
     string line;
-    // int tid_max = 0;
     while (getline(fin, line))
     {
         stringstream ss(line);
@@ -160,7 +159,6 @@ taskNode *sortFunction(taskNode *head, bool var)
     {
         return head;
     }
-    // taskNode *middle = find_mid(head);
     taskNode *mid = find_mid(head);
     taskNode *lefthead = head, *righthead = mid->next;
     mid->next = nullptr;
@@ -303,6 +301,9 @@ void printTask(taskNode *head)
         char timeStr[20];
         strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", timeInfo); // Format time as YYYY-MM-DD HH:MM:SS
 
+        // if required time only
+        //  strftime(timeStr, sizeof(timeStr), "%H:%M:%S", timeInfo);
+
         // Print task data with creation time
         cout << "| " << left << setw(idWidth) << temp->task->taskId
              << "| " << left << setw(nameWidth) << temp->task->taskName
@@ -330,17 +331,17 @@ int main()
         }
         // system("cls"); // For Windows
 
-        cout << string(40, '-') << endl;                    // Divider
-        cout << setw(20) <<  "Task Manager" << endl; // Title
-        cout << string(40, '-') << endl;                    // Divider
+        cout << string(40, '-') << endl;            // Divider
+        cout << setw(20) << "Task Manager" << endl; // Title
+        cout << string(40, '-') << endl;            // Divider
 
-        cout << "Create Task      --> 1" << endl
-             << "Print Task       --> 2" << endl
-             << "Done By ID       --> 3" << endl
-             << "Sort By Cr Time  --> 4" << endl
-             << "Save and Exit    --> 5" << endl
-             << "Fetch From CSV   --> 6" << endl
-             << "Exit             --> -1" << endl
+        cout << "1. Create Task" << endl
+             << "2. Print Task" << endl
+             << "3. Done By ID" << endl
+             << "4. Sort By Cr Time" << endl
+             << "5. Save and Exit" << endl
+             << "6. Fetch From CSV" << endl
+             << "(-1) Exit" << endl
              << "Enter --> ";
 
         cin >> choice;

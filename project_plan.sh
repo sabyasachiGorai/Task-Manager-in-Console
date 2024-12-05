@@ -43,13 +43,30 @@ Now work on:
 
 # NEW LEARNINGS
 -> pointer in depth
--> iomanip
-    - setw # https://www.youtube.com/watch?v=SXLwnZG3KPI  << 
--> merge two sorted array
--> merge sort
--> merge two sorted list
--> find mid of the list
--> merge sort in list
+-> sorting
+    -> merge two sorted array
+    -> merge sort
+    -> merge two sorted list
+    -> find mid of the list
+    -> merge sort in list
+
+-> file
+    -> ofstream
+    -> ifstream
+-> #include <iomanip>
+    - setw # https://www.youtube.com/watch?v=SXLwnZG3KPI  <<
+    - what left is doing here // done
+#include <string>
+    string(20, "s")
+#include <ctime>
+    # time_t
+    #         // Convert epoch time to human-readable format
+    #     time_t epochTime = static_cast<time_t>(temp->task->creationTime);
+
+    #     struct tm *timeInfo = localtime(&epochTime);
+    #     char timeStr[20];
+    #     strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", timeInfo); // Format time as YYYY-MM-DD HH:MM:SS
+
 
 // write what more learned
-# think about alinkedin post
+# think about a linkedin post
