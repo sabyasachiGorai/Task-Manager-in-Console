@@ -1,10 +1,10 @@
-A Pproject using C++ specifiaclly OOP and LinkedList data structur:
+A Pproject using C++ specifiaclly OOP and LinkedList data structure:
 
 Project Title:      Task Manager in Console
 
 IDEA:   Develop a program to take task for user as input and save in linkedlist data structure also save the data to a file and if required fetch it from a file
 
-Advancement:     Intially only prject name and project id later make it more robust by integrating 
+Advancement:     Intially only project name and project id later make it more robust by integrating 
             - duedate 
             # - save task in file fetch from a file if required
             # - priority 
@@ -24,7 +24,7 @@ Now Work on:
     # - sort them by Id
         --> also can be implemnted by priority queue but implemnted sorting 
         # LL mergesort
-        # merge to sorted LL # <-- to do 
+        # merge to sorted LL
         # find mid of a LL
     # - save to file  #<-- file  
     # - fetch from file
@@ -35,10 +35,6 @@ Now Work on:
             # // due date implement // due date cancelled creation time impplemented in cli duedate is overwhelming
             # // cli improve input handle
                     # tid_max = max(tid, tid_max);
-
-Now work on:
-    - work on additional features
-    - alternate two switch case except if else
 
 
 # NEW LEARNINGS
@@ -66,7 +62,3 @@ Now work on:
     #     struct tm *timeInfo = localtime(&epochTime);
     #     char timeStr[20];
     #     strftime(timeStr, sizeof(timeStr), "%Y-%m-%d %H:%M:%S", timeInfo); // Format time as YYYY-MM-DD HH:MM:SS
-
-
-// write what more learned
-# think about a linkedin post
