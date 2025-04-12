@@ -39,7 +39,7 @@ void saveToFileCSV(taskNode *&head)
     fout.open("tasks.txt");
 
     taskNode *temp = head;
-    temp = head;
+    // temp = head;
     while (temp != nullptr)
     {
         fout << temp->task->taskId << ","
@@ -187,6 +187,7 @@ void sortBYCT(taskNode *&head)
 
 void *taskInput(taskNode *&head, int &tid_max)
 {
+    // why astric before fucntion name
     cin.ignore();
 
     static int tid = tid_max;
@@ -210,6 +211,7 @@ void *taskInput(taskNode *&head, int &tid_max)
     else
     {
         newNode->next = head;
+        // that is i am adding to the front of the linked list
         head = newNode;
     }
 }
@@ -246,7 +248,10 @@ void delete_by_id(taskNode *&head)
     }
     if (curr == nullptr)
     {
-        cout << "Id " << id << " not found";
+        cout << "Id " << id << " not found"<<endl;
+        // added
+        return;
+
     }
     taskNode *toDel = curr;
     prev->next = curr->next;
